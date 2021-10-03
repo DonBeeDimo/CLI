@@ -21,12 +21,25 @@ function listContacts() {
 
 async function getContactById(contactId) {
   const contacts = await readContacts();
-  const [result] = contacts.filter((contact) => contact.id === contactId);
+  const [result] = contacts.filter(
+    (contact) => String(contact.id) === String(contactId)
+  );
   return result;
 }
 
-function removeContact(contactId) {
-  // ...твой код
+async function removeContact(contactId) {
+  const contacts = await readContacts();
+  const delContact = contacts.find(
+    (contact) => String(contact.id) === String(contactId)
+  );
+  const newContacts = contacts.filter(
+    (contact) => String(contact.id) !== String(contactId)
+  );
+  await fs.writeFile(
+    path.join(__dirname, "db/contacts.json"),
+    JSON.stringify(newContacts, null, 2)
+  );
+  return delContact;
 }
 
 async function addContact(name, email, phone) {
